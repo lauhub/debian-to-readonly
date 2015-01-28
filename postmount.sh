@@ -46,9 +46,14 @@ case "$1" in
 	mkdir -p /var/lib/sudo
 	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
 	
+        #Copie les données provenant de /var/lib/nfs
+        mkdir -p /var/lib/nfs
+        mount --bind /ro/var/lib/nfs /var/lib/nfs
+        
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/
 	
+	cp -p /etc/resolv.conf.static /tmp/resolv.conf
 	exit $?
 	;;
   restart|reload|force-reload)
