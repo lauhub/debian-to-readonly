@@ -1,13 +1,16 @@
 #!/bin/bash
 
 #To check if we are read write:
-touch /testro
+touch /testro > /dev/null 2>&1 
 status=$?
 
 if [[ "$status" == 0 ]] ; then
+	echo "Remounting Read Only"
 	#We are read-write
 	rm /testro
 	mount -o remount,ro /
 	/tmp/remountro
+else
+	echo "Already in Read Only mode"
 fi
 #else nothing to do, we are already ro
