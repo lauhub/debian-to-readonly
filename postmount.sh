@@ -25,13 +25,27 @@ case "$1" in
 	cd $CURDIR
         mkdir -p /var/log        
         mkdir -p /var/local/srv
-        mkdir -p /var/mail       
+	mount --bind /var/local/srv /srv
+	
+        mkdir -p /var/local/home
+        mkdir -p /var/mail
+	mkdir -p /var/lib
+	#Point de montage vers /ro/var/lib/apt
 	mkdir -p /var/lib/apt
+	mount --bind /ro/var/lib/apt /var/lib/apt
+	
+	#Point de montage vers /ro/var/lib/dpkg
 	mkdir -p /var/lib/dpkg
+	mount --bind /ro/var/lib/dpkg /var/lib/dpkg
+	
 	mkdir -p /var/lib/insserv
 	mkdir -p /var/lib/ntp
 	mkdir -p /var/lib/dhcp
+
+	#Copie les données provenant de /var/lib/sudo
 	mkdir -p /var/lib/sudo
+	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
+	
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/
 	
