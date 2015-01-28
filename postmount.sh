@@ -45,9 +45,10 @@ case "$1" in
 	cd $CURDIR
         mkdir -p /var/log
 
-	create_bind_point /var/local/srv /srv
+	#/srv must be mounted into a tmpfs filesystem
+	mkdir -p /var/local/srv
+	mount --bind /var/local/srv /srv
 	
-        mkdir -p /var/local/home
         mkdir -p /var/mail
 	mkdir -p /var/lib
         #Point de montage vers /ro/var/cache
