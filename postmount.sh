@@ -14,8 +14,28 @@
 
 . /lib/init/bootclean.sh
 
+BIND_MOUNT_OPTIONS="-o bind,ro"
+
+REMOUNT_RW_FILE=/tmp/remountrw
+REMOUNT_RO_FILE=/tmp/remountro
+
+
+create_bind_point(){
+	mkdir -p $2
+	mount $BIND_MOUNT_OPTIONS $1 $2
+	echo "mount -o remount,rw,bind $1 $2" >> $REMOUNT_RW_FILE
+        echo "mount -o remount,ro,bind $1 $2" >> $REMOUNT_RO_FILE
+}
+
+
 case "$1" in
   start|"")
+	#Fichiers temporaire pour le remontage en rw/ro
+        echo '#!/bin/bash' > $REMOUNT_RO_FILE
+	echo '#!/bin/bash' > $REMOUNT_RW_FILE
+	chmod +x $REMOUNT_RO_FILE
+	chmod +x $REMOUNT_RW_FILE
+
 	mkdir -p /var/tmp
         mkdir -p /var/lib
         mkdir -p /var/spool/cron/crontabs
@@ -23,28 +43,24 @@ case "$1" in
 	CURDIR=`pwd`
 	cd /var/spool ; ln -s ../mail
 	cd $CURDIR
-        mkdir -p /var/log        
-        mkdir -p /var/local/srv
-	mount --bind /var/local/srv /srv
+        mkdir -p /var/log
+
+	create_bind_point /var/local/srv /srv
 	
         mkdir -p /var/local/home
         mkdir -p /var/mail
 	mkdir -p /var/lib
         #Point de montage vers /ro/var/cache
-        mkdir -p /var/cache
-        mount --bind /ro/var/cache /var/cache
+        create_bind_point /ro/var/cache /var/cache
         
 	#Point de montage vers /ro/var/lib/apt
-	mkdir -p /var/lib/apt
-	mount --bind /ro/var/lib/apt /var/lib/apt
+	create_bind_point /ro/var/lib/apt /var/lib/apt
 	
 	#Point de montage vers /ro/var/lib/dpkg
-	mkdir -p /var/lib/dpkg
-	mount --bind /ro/var/lib/dpkg /var/lib/dpkg
+	create_bind_point /ro/var/lib/dpkg /var/lib/dpkg
 	
 	#Point de montage vers /ro/var/lib/dbus
-	mkdir -p /var/lib/dbus
-	mount --bind /ro/var/lib/dbus /var/lib/dbus
+	create_bind_point /ro/var/lib/dbus /var/lib/dbus
 	
 	mkdir -p /var/lib/insserv
 	mkdir -p /var/lib/ntp
@@ -54,9 +70,8 @@ case "$1" in
 	mkdir -p /var/lib/sudo
 	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
 	
-        #Copie les données provenant de /var/lib/nfs
-        mkdir -p /var/lib/nfs
-        mount --bind /ro/var/lib/nfs /var/lib/nfs
+        #Point de montage vers /ro/var/lib/nfs
+        create_bind_point /ro/var/lib/nfs /var/lib/nfs
         
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/

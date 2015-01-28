@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#To check if we are read write:
+touch /testro
+status=$?
+
+if [[ "$status" == 0 ]] ; then
+	#We are read-write
+	rm /testro
+	mount -o remount,ro /
+	/tmp/remountro
+fi
+#else nothing to do, we are already ro
