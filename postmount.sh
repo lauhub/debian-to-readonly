@@ -30,6 +30,10 @@ case "$1" in
         mkdir -p /var/local/home
         mkdir -p /var/mail
 	mkdir -p /var/lib
+        #Point de montage vers /ro/var/cache
+        mkdir -p /var/cache
+        mount --bind /ro/var/cache /var/cache
+        
 	#Point de montage vers /ro/var/lib/apt
 	mkdir -p /var/lib/apt
 	mount --bind /ro/var/lib/apt /var/lib/apt
@@ -37,6 +41,10 @@ case "$1" in
 	#Point de montage vers /ro/var/lib/dpkg
 	mkdir -p /var/lib/dpkg
 	mount --bind /ro/var/lib/dpkg /var/lib/dpkg
+	
+	#Point de montage vers /ro/var/lib/dbus
+	mkdir -p /var/lib/dbus
+	mount --bind /ro/var/lib/dbus /var/lib/dbus
 	
 	mkdir -p /var/lib/insserv
 	mkdir -p /var/lib/ntp
