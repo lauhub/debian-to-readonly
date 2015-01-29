@@ -1,15 +1,17 @@
 #!/bin/bash
+. /lib/lsb/init-functions
+
 
 #To check if we are read write:
 touch /testro > /dev/null 2>&1
 status=$?
 
 if [[ "$status" != 0 ]] ; then
-	echo "Remounting R/W"
+	log_action_msg "Remounting filesystems in R/W mode"
 	#We are read-only
 	mount -o remount,rw /
 	/tmp/remountrw
 else
-	echo "We are already R/W."
+	log_action_msg "All filesystems are already in R/W mode"
 fi
 #else nothing to do, we are already rw
