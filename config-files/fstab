@@ -1,0 +1,15 @@
+# /etc/fstab: static file system information.
+#
+# <file system> <mount point>   <type>    <options>       <dump>  <pass>
+
+#The main disk mount-point:
+/dev/root        /               ext4     ro,noatime,errors=remount-ro 0 1
+
+#
+tmpfs            /run/shm        tmpfs    defaults                  0 0
+tmpfs            /tmp            tmpfs    defaults                  0 0
+
+#Bind /var to /ro/var
+/var             /ro/var         none     bind,ro                   0 0
+#Create tmpfs and mount it on /var
+tmpfs            /var            tmpfs    defaults                  0 0
