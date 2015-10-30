@@ -1,0 +1,2 @@
+/dev/nand2	/       ext4    defaults,noatime,nodiratime,data=writeback,commit=600,errors=remount-ro        0       0
+/dev/nand1	/boot	vfat	defaults	0	0
