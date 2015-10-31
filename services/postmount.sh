@@ -24,14 +24,14 @@ create_bind_point(){
 	mkdir -p $2
 	mount $BIND_MOUNT_OPTIONS $1 $2
 	echo "mount -o remount,rw,bind $1 $2" >> $REMOUNT_RW_FILE
-        echo "mount -o remount,ro,bind $1 $2" >> $REMOUNT_RO_FILE
+    echo "mount -o remount,ro,bind $1 $2" >> $REMOUNT_RO_FILE
 }
 
 
 case "$1" in
   start|"")
-  #Adding log message
-  log_action_begin_msg "Creating bind points"
+	#Adding log message
+	log_action_begin_msg "Creating bind points"
   	  
 	#Fichiers temporaire pour le remontage en rw/ro
     echo '#!/bin/bash' > $REMOUNT_RO_FILE
@@ -75,13 +75,19 @@ case "$1" in
 	mkdir -p /var/lib/sudo
 	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
 	
-	#Point de montage vers /ro/var/lib/nfs
-	create_bind_point /ro/var/lib/nfs /var/lib/nfs
-        
+	#Taking into account possibly present dir: /ro/var/lib/nfs
+	if [ -d /ro/var/lib/nfs ] ; then
+		create_bind_point /ro/var/lib/nfs /var/lib/nfs
+	fi
+	
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/
 	
-	cp -p /etc/resolv.conf.static /tmp/resolv.conf
+	if [ -f /etc/resolv.conf.static ] ; then
+		cp -p /etc/resolv.conf.static /tmp/resolv.conf
+	fi
+	
+	ln -s /tmp/resolv.conf /etc/resolv.conf
 	
 	log_action_end_msg 0
 	
