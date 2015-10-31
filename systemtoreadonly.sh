@@ -2,7 +2,7 @@
 mkdir -p /local/home /local/srv 
 
 #Creates the places where we will bind original files to:
-#mkdir -p /ro/var /ro/srv /ro/home
+mkdir -p /ro/var /ro/srv /ro/home
 
 cp /etc/adjtime /var/local/adjtime
 rm /etc/adjtime; ln -s /var/local/adjtime /etc/adjtime
