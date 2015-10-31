@@ -14,7 +14,7 @@ readonly: ro_directories /etc/init.d/postmount.sh $(RO_APT_CONF_FILE) /sbin/goro
 
 ro_directories: 
 	mkdir -p /local/home /local/srv 
-	#mkdir -p /ro/var /ro/srv /ro/home
+	mkdir -p /ro/var
 
 /etc/init.d/postmount.sh: services/postmount.sh
 	cp $< $@
