@@ -30,8 +30,11 @@ create_bind_point(){
 
 case "$1" in
   start|"")
+  	  #Adding log message
+  	  log_action_begin_msg "Creating bind points"
+  	  
 	#Fichiers temporaire pour le remontage en rw/ro
-        echo '#!/bin/bash' > $REMOUNT_RO_FILE
+    echo '#!/bin/bash' > $REMOUNT_RO_FILE
 	echo '#!/bin/bash' > $REMOUNT_RW_FILE
 	chmod +x $REMOUNT_RO_FILE
 	chmod +x $REMOUNT_RW_FILE
@@ -78,6 +81,9 @@ case "$1" in
 	#mkdir -p /var/lib/
 	
 	cp -p /etc/resolv.conf.static /tmp/resolv.conf
+	
+	log_action_end_msg 0
+	
 	exit $?
 	;;
   restart|reload|force-reload)
