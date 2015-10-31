@@ -30,8 +30,8 @@ create_bind_point(){
 
 case "$1" in
   start|"")
-  	  #Adding log message
-  	  log_action_begin_msg "Creating bind points"
+  #Adding log message
+  log_action_begin_msg "Creating bind points"
   	  
 	#Fichiers temporaire pour le remontage en rw/ro
     echo '#!/bin/bash' > $REMOUNT_RO_FILE
@@ -40,22 +40,23 @@ case "$1" in
 	chmod +x $REMOUNT_RW_FILE
 
 	mkdir -p /var/tmp
-        mkdir -p /var/lib
-        mkdir -p /var/spool/cron/crontabs
-        mkdir -p /var/spool/rsyslog
+	mkdir -p /var/lib
+	mkdir -p /var/spool/cron/crontabs
+	mkdir -p /var/spool/rsyslog
 	CURDIR=`pwd`
 	cd /var/spool ; ln -s ../mail
 	cd $CURDIR
-        mkdir -p /var/log
+	mkdir -p /var/log
 
 	#/srv must be mounted into a tmpfs filesystem
 	mkdir -p /var/local/srv
 	mount --bind /var/local/srv /srv
 	
-        mkdir -p /var/mail
+	mkdir -p /var/mail
 	mkdir -p /var/lib
-        #Point de montage vers /ro/var/cache
-        create_bind_point /ro/var/cache /var/cache
+	
+	#Point de montage vers /ro/var/cache
+	create_bind_point /ro/var/cache /var/cache
         
 	#Point de montage vers /ro/var/lib/apt
 	create_bind_point /ro/var/lib/apt /var/lib/apt
@@ -74,8 +75,8 @@ case "$1" in
 	mkdir -p /var/lib/sudo
 	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
 	
-        #Point de montage vers /ro/var/lib/nfs
-        create_bind_point /ro/var/lib/nfs /var/lib/nfs
+	#Point de montage vers /ro/var/lib/nfs
+	create_bind_point /ro/var/lib/nfs /var/lib/nfs
         
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/
