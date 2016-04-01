@@ -80,6 +80,11 @@ case "$1" in
 		create_bind_point /ro/var/lib/nfs /var/lib/nfs
 	fi
 	
+	#Taking into account possibly present dir: /ro/var/lib/monit
+	if [ -d /ro/var/lib/monit ] ; then
+		create_bind_point /ro/var/lib/monit /var/lib/monit
+	fi
+	
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/
 	
