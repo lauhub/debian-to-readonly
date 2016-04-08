@@ -92,6 +92,10 @@ case "$1" in
 		cp -p /etc/resolv.conf.static /tmp/resolv.conf
 	fi
 	
+	echo "mount -o remount,rw,bind  /ro/var" >> $REMOUNT_RW_FILE
+    echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
+	
+	
 	ln -s /tmp/resolv.conf /etc/resolv.conf
 	
 	log_action_end_msg 0
