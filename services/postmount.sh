@@ -11,8 +11,10 @@
 #                    copy some information from original /var/lib
 #                    which should be into /rootfsvar
 ### END INIT INFO
+PATH=/sbin:/bin
+. /lib/init/vars.sh
 
-. /lib/init/bootclean.sh
+. /lib/lsb/init-functions
 
 BIND_MOUNT_OPTIONS="-o bind,ro"
 
@@ -82,7 +84,7 @@ case "$1" in
 	
 	#Taking into account possibly present dir: /ro/var/lib/monit
 	if [ -d /ro/var/lib/monit ] ; then
-		create_bind_point /ro/var/lib/monit /var/lib/monit
+		mkdir -p /var/lib/monit
 	fi
 	
 	mkdir -p /var/lib/usbutils
@@ -92,25 +94,37 @@ case "$1" in
 	
 	ORIGINAL_RESOLV_CONF=/etc/resolv.conf
 	READONLY_RESOLV_CONF=/tmp/resolv.conf
+	echo "About to update resolv.conf" >> /var/log/pads_resolv.log
+	ls -l /etc/resolv.conf  >> /var/log/pads_resolv.log 2>&1
+
 	if [ -f $ORIGINAL_RESOLV_CONF ] ; then
 		#We have a file here
 		if [ ! -L $ORIGINAL_RESOLV_CONF ] ; then
 			#It is not a symlink
+                        mount -o remount,rw /
 			#We copy it to the READONLY_RESOLV_CONF
-			cp -p $ORIGINAL_RESOLV_CONF $READONLY_RESOLV_CONF
-			rm $ORIGINAL_RESOLV_CONF
-			ln -s $READONLY_RESOLV_CONF $ORIGINAL_RESOLV_CONF
+			cp -p $ORIGINAL_RESOLV_CONF $READONLY_RESOLV_CONF  >> /var/log/pads_resolv.log 2>&1
+			rm $ORIGINAL_RESOLV_CONF  >> /var/log/pads_resolv.log 2>&1
+			ln -s $READONLY_RESOLV_CONF $ORIGINAL_RESOLV_CONF  >> /var/log/pads_resolv.log 2>&1
+			
+			echo "Created a link for resolv.conf" >> /var/log/pads_resolv.log
+                        mount -o remount,ro /
 		fi
 		#ELSE: It is already a symlink: nothing to do
 	else
 		#Nothing at this path.
 		#We create the target resolv.conf
-		touch $READONLY_RESOLV_CONF
+		touch $READONLY_RESOLV_CONF  >> /var/log/pads_resolv.log 2>&1
 		#And link it from /etc/resolv.conf
-		ln -s $READONLY_RESOLV_CONF $ORIGINAL_RESOLV_CONF
+                mount -o remount,rw /
+		ln -s $READONLY_RESOLV_CONF $ORIGINAL_RESOLV_CONF  >> /var/log/pads_resolv.log 2>&1
+		echo "updated a link for resolv.conf" >> /var/log/pads_resolv.log 2>&1
+                mount -o remount,ro /
 	fi
-    
-	echo "mount -o remount,rw,bind  /ro/var" >> $REMOUNT_RW_FILE
+	
+	ls -l /etc/resolv.conf  >> /var/log/pads_resolv.log 2>&1
+
+	echo "mount -o remount,rw,bind /ro/var" >> $REMOUNT_RW_FILE
     echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
     
 	
