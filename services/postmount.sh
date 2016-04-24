@@ -88,15 +88,31 @@ case "$1" in
 	mkdir -p /var/lib/usbutils
 	#mkdir -p /var/lib/
 	
-	if [ -f /etc/resolv.conf.static ] ; then
-		cp -p /etc/resolv.conf.static /tmp/resolv.conf
-	fi
+	#The most tricky part: resolv.conf
 	
+	ORIGINAL_RESOLV_CONF=/etc/resolv.conf
+	READONLY_RESOLV_CONF=/tmp/resolv.conf
+	if [ -f $ORIGINAL_RESOLV_CONF ] ; then
+		#We have a file here
+		if [ ! -L $ORIGINAL_RESOLV_CONF ] ; then
+			#It is not a symlink
+			#We copy it to the READONLY_RESOLV_CONF
+			cp -p $ORIGINAL_RESOLV_CONF $READONLY_RESOLV_CONF
+			rm $ORIGINAL_RESOLV_CONF
+			ln -s $READONLY_RESOLV_CONF $ORIGINAL_RESOLV_CONF
+		fi
+		#ELSE: It is already a symlink: nothing to do
+	else
+		#Nothing at this path.
+		#We create the target resolv.conf
+		touch $READONLY_RESOLV_CONF
+		#And link it from /etc/resolv.conf
+		ln -s $READONLY_RESOLV_CONF $ORIGINAL_RESOLV_CONF
+	fi
+    
 	echo "mount -o remount,rw,bind  /ro/var" >> $REMOUNT_RW_FILE
     echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
-	
-	
-	ln -s /tmp/resolv.conf /etc/resolv.conf
+    
 	
 	log_action_end_msg 0
 	
