@@ -129,7 +129,13 @@ case "$1" in
     
 	
 	log_action_end_msg 0
+
+        log_action_begin_msg "Executing subscripts"
+
+	run-parts --arg="start" /etc/postmount.d/
 	
+	log_action_end_msg 0
+
 	exit $?
 	;;
   restart|reload|force-reload)
