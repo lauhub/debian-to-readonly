@@ -25,7 +25,7 @@ ro_directories:
 	update-rc.d $(notdir $@) start 10 S
 
 $(RO_APT_CONF_FILE): config-files/aptremountrw.conf
-	cp $< $@
+	@echo DISABLED: will not cp $< $@
 
 /sbin/goro: scripts/goro
 	cp $< $@
