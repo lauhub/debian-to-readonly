@@ -36,7 +36,7 @@ case "$1" in
 	log_action_begin_msg "Creating bind points"
   	  
 	#Fichiers temporaire pour le remontage en rw/ro
-    echo '#!/bin/bash' > $REMOUNT_RO_FILE
+	echo '#!/bin/bash' > $REMOUNT_RO_FILE
 	echo '#!/bin/bash' > $REMOUNT_RW_FILE
 	chmod +x $REMOUNT_RO_FILE
 	chmod +x $REMOUNT_RW_FILE
@@ -125,7 +125,7 @@ case "$1" in
 	ls -l /etc/resolv.conf  >> /var/log/pads_resolv.log 2>&1
 
 	echo "mount -o remount,rw,bind /ro/var" >> $REMOUNT_RW_FILE
-    echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
+	echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
     
 	
 	log_action_end_msg 0
