@@ -8,10 +8,13 @@ RO_APT_CONF_FILE=/etc/apt/apt.conf.d/98aptremountrw
 ###########################
 # Readonly part
 ###########################
-.PHONY: ro_directories /etc/environment /sbin/dhclient-script
+.PHONY: ro_directories subscriptsdir /etc/environment /sbin/dhclient-script
 
-readonly: ro_directories /etc/init.d/postmount.sh $(RO_APT_CONF_FILE) /sbin/goro /sbin/gorw /sbin/dhclient-script /etc/init.d/hwclock.sh /etc/environment /etc/fstab
+readonly: ro_directories subscriptsdir /etc/init.d/postmount.sh $(RO_APT_CONF_FILE) /sbin/goro /sbin/gorw /sbin/dhclient-script /etc/init.d/hwclock.sh /etc/environment /etc/fstab
 
+subscriptsdir:
+	mkdir -p /etc/postmount.d
+	
 ro_directories: 
 	mkdir -p /local/home /local/srv 
 	mkdir -p /ro/var
@@ -24,7 +27,6 @@ ro_directories:
 $(RO_APT_CONF_FILE): config-files/aptremountrw.conf
 	cp $< $@
 
-	
 /sbin/goro: scripts/goro
 	cp $< $@
 
