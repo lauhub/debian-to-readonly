@@ -25,17 +25,15 @@ if [ "$readonlymode" = "0" ] ; then
 	for f in `ls -a $HOME`
 	do
 		FILE=$HOME/$f
-		if [[ "$f" == ".bash"* ]] ; then
-			cp -f $FILE /ro/$HOME/
-		fi
+		case $f in
+			.lesshst | .bash* | .gitconfig | .Xauthority | .profile)
+				cp -f $FILE /ro/$HOME/
+				;;
 		
-		if [[ "$f" == ".gitconfig"* ]] ; then
-			cp -f $FILE /ro/$HOME/
-		fi
-		
-		if [[ "$f" == ".ssh"* ]] ; then
-			cp -f -r $FILE /ro/$HOME/
-		fi
+			.ssh | .ne)
+				cp -f -r $FILE /ro/$HOME/
+				;;
+		esac
 		
 	done
 else

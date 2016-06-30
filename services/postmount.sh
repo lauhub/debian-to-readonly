@@ -40,6 +40,39 @@ create_bind_point(){
     echo "mount -o remount,ro,bind $1 $2" >> $REMOUNT_RO_FILE
 }
 
+duplicate_home_subdirs(){
+	#This one should be /ro/home
+	SOURCE_HOME_DIR=$1 
+	#This one should be /var/local/home
+	TARGET_HOME_DIR=$2
+	
+	#Each file
+	for directory in `ls $SOURCE_HOME_DIR` ; do
+		#User is the same as directory
+		user=$directory
+		
+		#Create target
+		mkdir -p $TARGET_HOME_DIR/$directory
+		for source in `ls -a $SOURCE_HOME_DIR/$directory`
+		do
+			case $source in
+			.lesshst | .bash* | .gitconfig | .Xauthority | .profile)
+				cp $SOURCE_HOME_DIR/$directory/$source $TARGET_HOME_DIR/$directory/
+				;;
+			.ssh | .ne)
+				cp -r $SOURCE_HOME_DIR/$directory/$source $TARGET_HOME_DIR/$directory/
+				;;
+			. | ..)
+				;;
+			*)
+				ln -s $SOURCE_HOME_DIR/$directory/$source $TARGET_HOME_DIR/$directory/
+			esac
+		done
+		chown -R $user:$user $TARGET_HOME_DIR/$directory
+		
+	done
+}
+
 
 case "$1" in
   start|"")
@@ -125,6 +158,8 @@ case "$1" in
 	#This one is specific.
 	#We want it to be writable at any time, but whenever a user logs in, 
 	#it will copy the main files from the /ro/home directory
+	#This last thing is done via .bash_logout script
+	#
 	
 	
 	
@@ -189,6 +224,10 @@ case "$1" in
 	;;
   stop)
 	# No-op
+	;;
+  test)
+	# No-op
+	duplicate_home_subdirs /home /tmp/output
 	;;
   *)
 	echo "Usage: postmount.sh [start|stop]" >&2
