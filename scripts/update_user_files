@@ -4,6 +4,7 @@ RED='\033[0;31m'
 LRED='\033[1;31m'
 NOCOLOR='\033[0m'
 YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
 
 current_user=$(who am i)
 
@@ -15,6 +16,11 @@ grep " / " /proc/mounts | grep "\srw[\s,]" > /dev/null
 readonlymode=$?
 
 if [ "$readonlymode" = "0" ] ; then
+	echo -e "${GREEN}##############################################################################${NOCOLOR}"
+	echo -e "${GREEN}# Updating files because your system is Read-Write"
+	echo -e "# "
+	echo -e "# ${RED}Do not forget to go back to Read Only mode !!!"
+	echo -e "${GREEN}##############################################################################${NOCOLOR}"
 	
 	for f in `ls -a $HOME`
 	do
