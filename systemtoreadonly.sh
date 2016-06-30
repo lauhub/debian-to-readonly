@@ -26,24 +26,20 @@ fi
 append_text_to_file_if_needed(){
 	text=$1
 	filepath=$2
+	if  grep -q -F "$1" $filepath  ; then
+		echo "$filepath is already up-to-date."
+	else
+		echo "Updating $filepath"
+		echo "$1" >> $filepath
+	fi
 }
 
 for userhomedir in `ls /home`
 do
 	USER_DIR=/home/$userhomedir
 	#grep -q -F '/usr/bin/welcome_bash' $USER_DIR/.bashrc || echo '/usr/bin/welcome_bash' >> $USER_DIR/.bashrc
-	if  grep -q -F '/usr/bin/welcome_bash' $USER_DIR/.bashrc  ; then
-		echo "$USER_DIR/.bashrc is already OK"
-	else
-		echo "Updating $USER_DIR/.bashrc"
-		echo '/usr/bin/welcome_bash' >> $USER_DIR/.bashrc
-	fi
-	if grep -q -F '/usr/bin/update_user_file' $USER_DIR/.bash_logout ; then
-		echo "$USER_DIR/.bash_logout is already OK"
-	else
-		echo "Updating $USER_DIR/.bash_logout"
-		echo '/usr/bin/update_user_file' >> $USER_DIR/.bash_logout
-	fi
+	append_text_to_file_if_needed '/usr/bin/welcome_bash' $USER_DIR/.bashrc 
+	append_text_to_file_if_needed '/usr/bin/update_user_files' $USER_DIR/.bash_logout 
 done
 
 
