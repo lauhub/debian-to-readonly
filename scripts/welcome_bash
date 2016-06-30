@@ -1,0 +1,20 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+LRED='\033[1;31m'
+NOCOLOR='\033[0m'
+YELLOW='\033[1;33m'
+ORANGE='\033[0;33m'
+
+
+echo -e "${RED}##############################################################################${NOCOLOR}"
+echo -e "${RED}# You are on machine with a read-only ROOTFS"
+echo -e "# This means that saving your files in your home dir will make them not saved."
+echo -e "# "
+echo -e "# Use symlinks to writable FS into your Home Dir to avoid loss of data."
+echo -e "# "
+echo -e "# If the rootfs is writable (which may occur if someone called ${YELLOW}gorw${RED} script)"
+echo -e "# only .bash* files and .ssh directory that are located into your home will be updated to ROOTFS."
+echo -e "# ${ORANGE}But be careful: using gorw may let your system harmable"
+echo -e "${RED}##############################################################################${NOCOLOR}"
+

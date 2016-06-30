@@ -4,13 +4,16 @@
 
 RO_APT_CONF_FILE=/etc/apt/apt.conf.d/98aptremountrw
 
+BASHRC_FOR_ACTUAL_USERS=$(wildcard /home/*/.bashrc)
+BASHRC_FOR_ROOT=/root/.bashrc
 	
 ###########################
 # Readonly part
 ###########################
-.PHONY: ro_directories subscriptsdir /etc/environment /sbin/dhclient-script
 
-readonly: ro_directories subscriptsdir /etc/init.d/postmount.sh $(RO_APT_CONF_FILE) /sbin/goro /sbin/gorw /sbin/dhclient-script /etc/init.d/hwclock.sh /etc/environment /etc/fstab
+readonly: ro_directories subscriptsdir /etc/init.d/postmount.sh $(RO_APT_CONF_FILE) /sbin/goro /sbin/gorw /sbin/dhclient-script /etc/init.d/hwclock.sh /etc/environment /etc/fstab /usr/bin/update_user_files /usr/bin/welcome_bash /etc/skel/.bashrc /etc/skel/.bash_logout $(BASHRC_FOR_ACTUAL_USERS)
+	
+.PHONY: ro_directories subscriptsdir /etc/environment /sbin/dhclient-script /etc/skel/.bashrc /etc/skel/.bash_logout $(BASHRC_FOR_ACTUAL_USERS) 
 
 subscriptsdir:
 	mkdir -p /etc/postmount.d
@@ -38,4 +41,18 @@ $(RO_APT_CONF_FILE): config-files/aptremountrw.conf
 
 /etc/fstab: config-files/fstab.nand
 	cp $< $@
+	
+/usr/bin/update_user_files: scripts/update_user_files
+	cp $< $@
+	
+/usr/bin/welcome_bash: scripts/welcome_bash
+	cp $< $@
+	
+/etc/skel/.bashrc:
+	-grep -q -F '/usr/bin/welcome_bash' $@ || echo '/usr/bin/welcome_bash' >> $@
+	
+/etc/skel/.bash_logout:
+	-grep -q -F '/usr/bin/update_user_file' $@ || echo '/usr/bin/update_user_file' >> $@
+	
+	
 	

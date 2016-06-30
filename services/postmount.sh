@@ -119,6 +119,14 @@ case "$1" in
 	
 	#usbutils writable file
 	mkdir -p /var/lib/usbutils
+	### ------------------------------ ###
+	# home directory
+	### ------------------------------ ###
+	#This one is specific.
+	#We want it to be writable at any time, but whenever a user logs in, 
+	#it will copy the main files from the /ro/home directory
+	
+	
 	
 	### ------------------------------ ###
 	# Resolv.conf

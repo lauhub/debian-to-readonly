@@ -1,0 +1,43 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+LRED='\033[1;31m'
+NOCOLOR='\033[0m'
+YELLOW='\033[1;33m'
+
+current_user=$(who am i)
+
+#To check if we are read write:
+#grep " / " /proc/mounts | grep "\sro[\s,]" #Check read only
+grep " / " /proc/mounts | grep "\srw[\s,]" > /dev/null
+#status=0 means we are read write
+#status=1 means we are read only
+readonlymode=$?
+
+if [ "$readonlymode" = "0" ] ; then
+	
+	for f in `ls -a $HOME`
+	do
+		FILE=$HOME/$f
+		if [[ "$f" == ".bash"* ]] ; then
+			cp -f $FILE /ro/$HOME/
+		fi
+		
+		if [[ "$f" == ".gitconfig"* ]] ; then
+			cp -f $FILE /ro/$HOME/
+		fi
+		
+		if [[ "$f" == ".ssh"* ]] ; then
+			cp -f -r $FILE /ro/$HOME/
+		fi
+		
+	done
+else
+	echo -e "${RED}##############################################################################${NOCOLOR}"
+	echo -e "${RED}# Modified files will ${LRED}NOT${RED} be SAVED"
+	echo -e "# since you are in Read-Only mode."
+	echo -e "# Use ${YELLOW}gorw${RED} script before logging out and call ${YELLOW}update_user_file script${RED}"
+	echo -e "# to make your change permanently saved."
+	echo -e "${RED}##############################################################################${NOCOLOR}"
+fi
+
