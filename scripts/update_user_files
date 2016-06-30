@@ -15,6 +15,23 @@ grep " / " /proc/mounts | grep "\srw[\s,]" > /dev/null
 #status=1 means we are read only
 readonlymode=$?
 
+SOURCE_HOME_DIR=$HOME
+TARGET_HOME_DIR=/ro/$HOME
+
+
+#For test purposes:
+if [ "$1"  = "test" ] ; then
+	SOURCE_HOME_DIR=$HOME
+	
+	if [ "$2"  = "" ] ; then
+		echo "You should give the target dir as second argument. Exiting"
+		exit 1
+	else
+		TARGET_HOME_DIR=$2
+		mkdir -p $TARGET_HOME_DIR
+	fi
+fi
+
 if [ "$readonlymode" = "0" ] ; then
 	echo -e "${GREEN}##############################################################################${NOCOLOR}"
 	echo -e "${GREEN}# Updating files because your system is Read-Write"
@@ -22,16 +39,16 @@ if [ "$readonlymode" = "0" ] ; then
 	echo -e "# ${RED}Do not forget to go back to Read Only mode !!!"
 	echo -e "${GREEN}##############################################################################${NOCOLOR}"
 	
-	for f in `ls -a $HOME`
+	for f in `ls -a $SOURCE_HOME_DIR`
 	do
-		FILE=$HOME/$f
+		FILE=$SOURCE_HOME_DIR/$f
 		case $f in
 			.lesshst | .bash* | .gitconfig | .Xauthority | .profile)
-				cp -f $FILE /ro/$HOME/
+				cp -f $FILE $TARGET_HOME_DIR/
 				;;
 		
 			.ssh | .ne)
-				cp -f -r $FILE /ro/$HOME/
+				cp -f -r $FILE $TARGET_HOME_DIR/
 				;;
 		esac
 		
