@@ -52,7 +52,7 @@ $(RO_APT_CONF_FILE): config-files/aptremountrw.conf
 	-grep -q -F '/usr/bin/welcome_bash' $@ || echo '/usr/bin/welcome_bash' >> $@
 	
 /etc/skel/.bash_logout:
-	-grep -q -F '/usr/bin/update_user_file' $@ || echo '/usr/bin/update_user_file' >> $@
+	-grep -q -F '/usr/bin/update_user_files' $@ || echo '/usr/bin/update_user_files' >> $@
 	
 	
 	
