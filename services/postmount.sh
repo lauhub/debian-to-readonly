@@ -21,7 +21,18 @@ BIND_MOUNT_OPTIONS="-o bind,ro"
 REMOUNT_RW_FILE=/tmp/remountrw
 REMOUNT_RO_FILE=/tmp/remountro
 
-
+# Creates a bind point that will point to the real directory. 
+#
+#
+# By default, this directory will be read-only.
+# But calling gorw script will make it rw.
+# Calling goro script will make it goro.
+# That is why we add to $REMOUNT_Rx_FILE a line. This will allow gorX scripts to 
+# take into account this script.
+# First argument: the directory that contain original values
+# Second argument: the mount point that will be see as the original file, 
+#                  but without (or with) RW permissions (according to if gorw or
+#                  goro scripts were called).
 create_bind_point(){
 	mkdir -p $2
 	mount $BIND_MOUNT_OPTIONS $1 $2
@@ -34,13 +45,21 @@ case "$1" in
   start|"")
 	#Adding log message
 	log_action_begin_msg "Creating bind points"
-  	  
-	#Fichiers temporaire pour le remontage en rw/ro
+  	
+	#We assume here that /var is mounted into a RAM FS (tmpfs)
+	#So /var will always be RW.
+	#But, we make sure that
+	
+	#Temporary script files
+	#These files will contain which remount command are to be called when remounting
+	#RW or RO
+	#e.g. goro script will call the REMOUNT_RO_FILE
 	echo '#!/bin/bash' > $REMOUNT_RO_FILE
 	echo '#!/bin/bash' > $REMOUNT_RW_FILE
 	chmod +x $REMOUNT_RO_FILE
 	chmod +x $REMOUNT_RW_FILE
-
+	
+	#RW directories are created here
 	mkdir -p /var/tmp
 	mkdir -p /var/lib
 	mkdir -p /var/spool/cron/crontabs
@@ -48,48 +67,62 @@ case "$1" in
 	CURDIR=`pwd`
 	cd /var/spool ; ln -s ../mail
 	cd $CURDIR
+	
+	#The log directory:
 	mkdir -p /var/log
 
 	#/srv must be mounted into a tmpfs filesystem
+	#In order to be RW
 	mkdir -p /var/local/srv
 	mount --bind /var/local/srv /srv
 	
 	mkdir -p /var/mail
 	mkdir -p /var/lib
 	
-	#Point de montage vers /ro/var/cache
+	### ------------------------------ ###
+	# Read-Only directories by default
+	### ------------------------------ ###
+	
+	#Mount point to /ro/var/cache
 	create_bind_point /ro/var/cache /var/cache
         
-	#Point de montage vers /ro/var/lib/apt
+	#Mount point to /ro/var/lib/apt
 	create_bind_point /ro/var/lib/apt /var/lib/apt
 	
-	#Point de montage vers /ro/var/lib/dpkg
+	#Mount point to /ro/var/lib/dpkg
 	create_bind_point /ro/var/lib/dpkg /var/lib/dpkg
 	
-	#Point de montage vers /ro/var/lib/dbus
+	#Mount point to /ro/var/lib/dbus
 	create_bind_point /ro/var/lib/dbus /var/lib/dbus
+	
+	### ------------------------------ ###
 	
 	mkdir -p /var/lib/insserv
 	mkdir -p /var/lib/ntp
 	mkdir -p /var/lib/dhcp
 
-	#Copie les données provenant de /var/lib/sudo
+	#Duplicates the data from the original /var/lib/sudo to temp RW directory
 	mkdir -p /var/lib/sudo
 	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
 	
 	#Taking into account possibly present dir: /ro/var/lib/nfs
+	#It will be RO
 	if [ -d /ro/var/lib/nfs ] ; then
 		create_bind_point /ro/var/lib/nfs /var/lib/nfs
 	fi
 	
 	#Taking into account possibly present dir: /ro/var/lib/monit
+	#It will be RW (monit needs a writable dir)
 	if [ -d /ro/var/lib/monit ] ; then
 		mkdir -p /var/lib/monit
 	fi
 	
+	#usbutils writable file
 	mkdir -p /var/lib/usbutils
-	#mkdir -p /var/lib/
 	
+	### ------------------------------ ###
+	# Resolv.conf
+	### ------------------------------ ###
 	#The most tricky part: resolv.conf
 	
 	ORIGINAL_RESOLV_CONF=/etc/resolv.conf
@@ -123,15 +156,19 @@ case "$1" in
 	fi
 	
 	ls -l /etc/resolv.conf  >> /var/log/pads_resolv.log 2>&1
-
+	### ------------------------------ ###
+	
+	
+	#Now add the /ro/var to temp scripts, in order to allow it to be writable if necessary
 	echo "mount -o remount,rw,bind /ro/var" >> $REMOUNT_RW_FILE
 	echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
     
 	
 	log_action_end_msg 0
-
-        log_action_begin_msg "Executing subscripts"
-
+	
+	log_action_begin_msg "Executing subscripts"
+	
+	#Run plugable scripts
 	run-parts --arg="start" /etc/postmount.d/
 	
 	log_action_end_msg 0
