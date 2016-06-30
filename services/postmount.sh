@@ -160,7 +160,7 @@ case "$1" in
 	#it will copy the main files from the /ro/home directory
 	#This last thing is done via .bash_logout script
 	#
-	
+	duplicate_home_subdirs /ro/home /var/local/home
 	
 	
 	### ------------------------------ ###
