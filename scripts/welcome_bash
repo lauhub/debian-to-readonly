@@ -11,6 +11,8 @@ LRED='\033[1;31m'
 NOCOLOR='\033[0m'
 YELLOW='\033[1;33m'
 ORANGE='\033[0;33m'
+PURPLE='\033[0;35m'
+GREEN='\033[0;32m'
 
 
 echo -e "${RED}##############################################################################${NOCOLOR}"
@@ -23,4 +25,21 @@ echo -e "# If the rootfs is writable (which may occur if someone called ${YELLOW
 echo -e "# only .bash* files and .ssh directory that are located into your home will be updated to ROOTFS."
 echo -e "# ${ORANGE}But be careful: using gorw may let your system harmable"
 echo -e "${RED}##############################################################################${NOCOLOR}"
+
+echo ""
+grep " / " /proc/mounts | grep "\srw[\s,]" > /dev/null
+#status=0 means we are read write
+#status=1 means we are read only
+readonlymode=$?
+
+if [ "$readonlymode" = "0" ] ; then
+    echo -e "${PURPLE}##############################################################################${NOCOLOR}"
+	echo -e "${PURPLE}###                   You are in ${RED}Read Write mode${PURPLE}                           ###${NOCOLOR}"
+    echo -e    "${PURPLE}##############################################################################${NOCOLOR}"
+else
+    echo -e "${PURPLE}##############################################################################${NOCOLOR}"
+	echo -e "${PURPLE}###                   You are in ${GREEN}Read Only mode${PURPLE}                            ###${NOCOLOR}"
+    echo -e    "${PURPLE}##############################################################################${NOCOLOR}"	
+fi
+echo ""
 
