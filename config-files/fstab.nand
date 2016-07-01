@@ -6,8 +6,7 @@
 #The main disk mount-point:
 /dev/nand2	/	ext4	rw,suid,dev,exec,auto,nouser,async,noatime,errors=remount-ro	0 0
 
-#
-tmpfs            /run/shm        tmpfs    defaults,size=	0 0
+#tmpfs            /run/shm        tmpfs    defaults,size=	0 0
 tmpfs            /tmp            tmpfs    defaults	0 0
 
 #Bind /var to /ro/var

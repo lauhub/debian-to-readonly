@@ -5,8 +5,7 @@
 #The main disk mount-point:
 /dev/root        /               ext4     ro,noatime,errors=remount-ro 0 1
 
-#
-tmpfs            /run/shm        tmpfs    defaults                  0 0
+#tmpfs            /run/shm        tmpfs    defaults                  0 0
 tmpfs            /tmp            tmpfs    defaults                  0 0
 
 #Bind /var to /ro/var
