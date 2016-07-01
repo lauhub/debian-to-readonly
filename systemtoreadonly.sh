@@ -42,6 +42,5 @@ do
 	append_text_to_file_if_needed '/usr/bin/update_user_files' $USER_DIR/.bash_logout 
 done
 
-
 append_text_to_file_if_needed "/var             /ro/var         none     bind,ro               0 0" /etc/fstab
-append_text_to_file_if_needed "/var             /ro/home        none     bind,ro               0 0" /etc/fstab
+append_text_to_file_if_needed "/home             /ro/home        none     bind,ro               0 0" /etc/fstab
