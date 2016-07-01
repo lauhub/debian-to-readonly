@@ -1,3 +1,12 @@
+
+#
+# Copyright (c) 2016 Laurent HUBERT, lau.hub@gma**.com
+#
+# This file is licensed under the terms of the GNU General Public
+# License version 2. This program is licensed "as is" without any
+# warranty of any kind, whether express or implied.
+
+
 ###########################
 # Readonly part
 ###########################
@@ -39,9 +48,6 @@ $(RO_APT_CONF_FILE): config-files/aptremountrw.conf
 /sbin/dhclient-script: config-files/dhclient-script
 	cp $< $@
 
-/etc/fstab: config-files/fstab.nand
-	cp $< $@
-	
 /usr/bin/update_user_files: scripts/update_user_files
 	cp $< $@
 	

@@ -1,4 +1,11 @@
 #! /bin/sh
+#
+# Copyright (c) 2016 Laurent HUBERT, lau.hub@gma**.com
+#
+# This file is licensed under the terms of the GNU General Public
+# License version 2. This program is licensed "as is" without any
+# warranty of any kind, whether express or implied.
+#
 ### BEGIN INIT INFO
 # Provides:          postmount
 # Required-Start:    mountall
@@ -10,6 +17,7 @@
 # Description:       Create all var subdirectories and eventually
 #                    copy some information from original /var/lib
 #                    which should be into /rootfsvar
+#
 ### END INIT INFO
 PATH=/sbin:/bin
 . /lib/init/vars.sh
