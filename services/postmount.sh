@@ -128,6 +128,8 @@ case "$1" in
 	#Mount point to /ro/var/lib/dbus
 	create_bind_point /ro/var/lib/dbus /var/lib/dbus
 	
+	#Mount point to /ro/var/lib/usbutils
+	create_bind_point /ro/var/lib/usbutils /var/lib/usbutils
 	### ------------------------------ ###
 	
 	mkdir -p /var/lib/insserv
@@ -161,7 +163,8 @@ case "$1" in
 	#This last thing is done via .bash_logout script
 	#
 	duplicate_home_subdirs /ro/home /var/local/home
-	
+	#And last but not least, the bind point:
+	mount --bind /var/local/home /home
 	
 	### ------------------------------ ###
 	# Resolv.conf
@@ -203,8 +206,10 @@ case "$1" in
 	
 	
 	#Now add the /ro/var to temp scripts, in order to allow it to be writable if necessary
-	echo "mount -o remount,rw,bind /ro/var" >> $REMOUNT_RW_FILE
-	echo "mount -o remount,ro,bind /ro/var" >> $REMOUNT_RO_FILE
+	echo "mount -o remount,rw,bind /ro/var"  >> $REMOUNT_RW_FILE
+	echo "mount -o remount,ro,bind /ro/var"  >> $REMOUNT_RO_FILE
+	echo "mount -o remount,rw,bind /ro/home" >> $REMOUNT_RW_FILE
+	echo "mount -o remount,ro,bind /ro/home" >> $REMOUNT_RO_FILE
     
 	
 	log_action_end_msg 0
@@ -235,4 +240,4 @@ case "$1" in
 	;;
 esac
 
-:
+
