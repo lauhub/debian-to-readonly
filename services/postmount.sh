@@ -170,7 +170,7 @@ case "$1" in
 	#it will copy the main files from the /ro/home directory
 	#This last thing is done via .bash_logout script
 	#
-	duplicate_home_subdirs /ro/home /var/local/home
+	#duplicate_home_subdirs /ro/home /var/local/home
 	#And last but not least, the bind point:
 	mount --bind /var/local/home /home
 	
