@@ -155,14 +155,6 @@ case "$1" in
 	ls -l /etc/resolv.conf  >> /var/log/pads_resolv.log 2>&1
 	### ------------------------------ ###
 	
-	
-	#Now add the /ro/var to temp scripts, in order to allow it to be writable if necessary
-	#echo "mount -o remount,rw,bind /ro/var"  >> $REMOUNT_RW_FILE
-	#echo "mount -o remount,ro,bind /ro/var"  >> $REMOUNT_RO_FILE
-	echo "mount -o remount,rw,bind /ro/home" >> $REMOUNT_RW_FILE
-	echo "mount -o remount,ro,bind /ro/home" >> $REMOUNT_RO_FILE
-    
-	
 	log_action_end_msg 0
 	
 	log_action_begin_msg "Executing subscripts"
