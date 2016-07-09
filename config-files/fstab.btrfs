@@ -9,17 +9,10 @@ UUID=f3adb497-9834-4f77-ad55-a396dfdf4b24  /	ext4 	ro,suid,dev,exec,auto,nouser,
 #The old var is mounted here for now
 /var             /ro/var         none     bind,ro               0 0
 
-#UUID=cb99527a-3bc8-4ea8-a6a7-6cb0f15a9714 
-#/dev/mmcblk1p2
-UUID=cb99527a-3bc8-4ea8-a6a7-6cb0f15a9714 /  btrfs noatime,compress=lzo,commit=0,ssd_spread,autodefrag 0 0
+#Then we mount the RAID1 disks
+UUID= /var  btrfs noatime,compress=lzo,commit=0,ssd_spread,autodefrag 0 0
 
 /var/swap none swap sw 0 0
 
 tmpfs 		 /tmp 		 tmpfs 	  defaults,nosuid 0 0
 
-#Bind /var to /ro/var
-#/var             /ro/var         none     bind,ro               0 0
-/home             /ro/home        none     bind,ro               0 0
-
-#Create tmpfs and mount it on /var
-#tmpfs            /var            tmpfs    defaults	0 0
