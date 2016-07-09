@@ -101,67 +101,67 @@ case "$1" in
 	chmod +x $REMOUNT_RW_FILE
 	
 	#RW directories are created here
-	mkdir -p /var/tmp
-	mkdir -p /var/lib
-	mkdir -p /var/spool/cron/crontabs
-	mkdir -p /var/spool/rsyslog
-	CURDIR=`pwd`
-	cd /var/spool ; ln -s ../mail
-	cd $CURDIR
+	#mkdir -p /var/tmp
+	#mkdir -p /var/lib
+	#mkdir -p /var/spool/cron/crontabs
+	#mkdir -p /var/spool/rsyslog
+	#CURDIR=`pwd`
+	#cd /var/spool ; ln -s ../mail
+	#cd $CURDIR
 	
 	#The log directory:
-	mkdir -p /var/log
+	#mkdir -p /var/log
 
 	#/srv must be mounted into a tmpfs filesystem
 	#In order to be RW
 	mkdir -p /var/local/srv
 	mount --bind /var/local/srv /srv
 	
-	mkdir -p /var/mail
-	mkdir -p /var/lib
+	#mkdir -p /var/mail
+	#mkdir -p /var/lib
 	
 	### ------------------------------ ###
 	# Read-Only directories by default
 	### ------------------------------ ###
 	
 	#Mount point to /ro/var/cache
-	create_bind_point /ro/var/cache /var/cache
+	#create_bind_point /ro/var/cache /var/cache
         
 	#Mount point to /ro/var/lib/apt
-	create_bind_point /ro/var/lib/apt /var/lib/apt
+	#create_bind_point /ro/var/lib/apt /var/lib/apt
 	
 	#Mount point to /ro/var/lib/dpkg
-	create_bind_point /ro/var/lib/dpkg /var/lib/dpkg
+	#create_bind_point /ro/var/lib/dpkg /var/lib/dpkg
 	
 	#Mount point to /ro/var/lib/dbus
-	create_bind_point /ro/var/lib/dbus /var/lib/dbus
+	#create_bind_point /ro/var/lib/dbus /var/lib/dbus
 	
 	#Mount point to /ro/var/lib/usbutils
-	create_bind_point /ro/var/lib/usbutils /var/lib/usbutils
+	#create_bind_point /ro/var/lib/usbutils /var/lib/usbutils
 	### ------------------------------ ###
 	
-	mkdir -p /var/lib/insserv
-	mkdir -p /var/lib/ntp
-	mkdir -p /var/lib/dhcp
+	#mkdir -p /var/lib/insserv
+	#mkdir -p /var/lib/ntp
+	#mkdir -p /var/lib/dhcp
 
 	#Duplicates the data from the original /var/lib/sudo to temp RW directory
-	mkdir -p /var/lib/sudo
-	cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
+	#mkdir -p /var/lib/sudo
+	#cp -pr /ro/var/lib/sudo/* /var/lib/sudo/
 	
 	#Taking into account possibly present dir: /ro/var/lib/nfs
 	#It will be RO
-	if [ -d /ro/var/lib/nfs ] ; then
-		create_bind_point /ro/var/lib/nfs /var/lib/nfs
-	fi
+	#if [ -d /ro/var/lib/nfs ] ; then
+	#	create_bind_point /ro/var/lib/nfs /var/lib/nfs
+	#fi
 	
 	#Taking into account possibly present dir: /ro/var/lib/monit
 	#It will be RW (monit needs a writable dir)
-	if [ -d /ro/var/lib/monit ] ; then
-		mkdir -p /var/lib/monit
-	fi
+	#if [ -d /ro/var/lib/monit ] ; then
+	#	mkdir -p /var/lib/monit
+	#fi
 	
 	#usbutils writable file
-	mkdir -p /var/lib/usbutils
+	#mkdir -p /var/lib/usbutils
 	### ------------------------------ ###
 	# home directory
 	### ------------------------------ ###
@@ -214,8 +214,8 @@ case "$1" in
 	
 	
 	#Now add the /ro/var to temp scripts, in order to allow it to be writable if necessary
-	echo "mount -o remount,rw,bind /ro/var"  >> $REMOUNT_RW_FILE
-	echo "mount -o remount,ro,bind /ro/var"  >> $REMOUNT_RO_FILE
+	#echo "mount -o remount,rw,bind /ro/var"  >> $REMOUNT_RW_FILE
+	#echo "mount -o remount,ro,bind /ro/var"  >> $REMOUNT_RO_FILE
 	echo "mount -o remount,rw,bind /ro/home" >> $REMOUNT_RW_FILE
 	echo "mount -o remount,ro,bind /ro/home" >> $REMOUNT_RO_FILE
     
